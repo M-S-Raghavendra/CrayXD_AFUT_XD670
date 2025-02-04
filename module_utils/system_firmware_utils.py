@@ -277,7 +277,7 @@ class CrayRedfishUtils(RedfishUtils):
             if 'MultipartHttpPushUri' in data:
                 headers = {'Expect': 'Continue','Content-Type': 'multipart/form-data'}
                 body = {}
-                if target=="GPU_ALL" and image_type=="HMC" and "fwpkg" in image_path:
+                if target=="GPU_ALL" and "fwpkg" in image_path:
                     response_memory = self.bmcfreememory()
                     if not response_memory:
                         update_status="BMC free memory failed"
@@ -410,9 +410,7 @@ class CrayRedfishUtils(RedfishUtils):
         # after_version="NA"
         image_path="NA"
         csv_file_name = attr.get('output_file_name')
-        image_type = config.get('Firmware_type','update_image_type')
-        if image_type is None:
-            image_type = attr.get('update_image_type') 
+        image_type = "HPM"
 
         if target=="" or target.upper() in XD670_unsupported_targets:
             return {'ret': False, 'changed': True, 'msg': 'Must specify the correct target for firmware update'}    
@@ -514,8 +512,8 @@ class CrayRedfishUtils(RedfishUtils):
                         else:
                             remarks="Please reflash the firmware and DO NOT DO physical power cycle"
                         lis=[IP,model,update_status,remarks]
-                    elif "HMC" in image_type:
-                        update_status=self.helper_update_GPU(update_status,target,image_path,image_type,IP,username,password,model)
+                    elif "GPU_ALL" in target:
+                        update_status=self.helper_update_GPU(update_status,target,image_path,"HMC",IP,username,password,model)
                         if update_status.lower() == "success":
                             update_status="Update Triggered"
                             remarks="It will take nearly 30 to 40 minutes to update baseboard firmware. The target system will be reboot once the firmware update procedure completed"
