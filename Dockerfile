@@ -1,5 +1,9 @@
 FROM ubuntu:latest
 
+ARG VERSION
+
+LABEL version="$VERSION"
+
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
